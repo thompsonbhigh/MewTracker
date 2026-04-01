@@ -1,4 +1,4 @@
-import React from 'react'
+import cat from '../assets/cat.png';
 
 const Home = () => {
   return (

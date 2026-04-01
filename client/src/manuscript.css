@@ -649,3 +649,11 @@ select {
 .progress--thin .progress__track {
   height: 0.65rem;
 }
+
+.legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 0;
+    gap: 6px
+}

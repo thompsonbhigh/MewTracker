@@ -1,5 +1,10 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
+import imgNormal from '../assets/normal.png';
+import imgHard from '../assets/hard.png';
+import imgCrazy from '../assets/crazy.png';
+import imgImpossible from '../assets/impossible.png';
+
 const Tracker = (progress) => {
     const percentage = `${progress.progress}%`;
     
@@ -23,6 +28,65 @@ const Tracker = (progress) => {
                             <div className='progress__track'>
                                 <div className='progress__fill' style={{ width: `${percentage}` }}/>
                             </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div/>
+
+                <div className='card card--pinned'>
+                    <div className='legend'>
+                        <div className='legend'>
+                            <img 
+                                src={imgNormal} 
+                                alt='normal'
+                                style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    objectFit: 'contain',
+                                    verticalAlign: 'middle',
+                                }}
+                            /> - Normal
+                        </div>
+
+                        <div className='legend'>
+                            <img 
+                                src={imgHard} 
+                                alt='hard'
+                                style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    objectFit: 'contain',
+                                    verticalAlign: 'middle',
+                                }}
+                            /> - Hard
+                        </div>
+
+                        <div className='legend'>
+                            <img 
+                                src={imgCrazy} 
+                                alt='crazy'
+                                style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    objectFit: 'contain',
+                                    verticalAlign: 'middle',
+                                }}
+                            /> - Crazy
+                        </div>
+
+                        <div className='legend'>
+                            <img 
+                                src={imgImpossible} 
+                                alt='impossible'
+                                style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    objectFit: 'contain',
+                                    verticalAlign: 'middle',
+                                }}
+                            /> - Impossible
                         </div>
                     </div>
                 </div>
