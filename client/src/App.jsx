@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { Login, Tracker, Home, Navbar } from './pages';
+import { Login, Tracker, Home, Navbar, ClassTracker, HouseTracker, NPCTracker } from './pages';
 // import './sketchbook.css';
 import './manuscript.css';
 
@@ -29,7 +29,11 @@ function App() {
 
                     <Routes>
                         <Route path='/' element={<Home />} />
-                        <Route path='/tracker' element={<Tracker />} />
+                        <Route path='/tracker' element={<Tracker />} >
+                            <Route path='classes' element={<ClassTracker />} />
+                            <Route path='house' element={<HouseTracker />} />
+                            <Route path='npcs' element={<NPCTracker />} />
+                        </Route>
                     </Routes>
                 </main>
             </div>
