@@ -1,29 +1,73 @@
 import { useEffect, useState } from 'react';
+
 import imgNull from '../assets/null.png';
 import imgNormal from '../assets/normal.png';
 import imgHard from '../assets/hard.png';
 import imgCrazy from '../assets/crazy.png';
 import imgImpossible from '../assets/impossible.png';
 
+import collarless from '../assets/collarless.webp';
+import fighter from '../assets/fighter.webp';
+import hunter from '../assets/hunter.webp';
+import mage from '../assets/mage.webp';
+import tank from '../assets/tank.webp';
+import cleric from '../assets/cleric.webp';
+import thief from '../assets/thief.webp';
+import necro from '../assets/necro.webp';
+import tinkerer from '../assets/tinkerer.webp';
+import butcher from '../assets/butcher.webp';
+import druid from '../assets/druid.webp';
+import psychic from '../assets/psychic.webp';
+import monk from '../assets/monk.webp';
+import jester from '../assets/jester.webp';
+
+import caves from '../assets/Caves.webp';
+import boneyard from '../assets/Boneyard.webp';
+import domain from '../assets/Domain.webp';
+import core from '../assets/Core.webp';
+import moon from '../assets/Moon.webp';
+import rift from '../assets/Rift.webp';
+import jurassic from '../assets/Jurassic.webp';
+import end from '../assets/End.webp';
+import infinite from '../assets/Infinite.webp';
+
 const STORAGE_KEY = 'tracker-image-indexes';
+const USER_ID = 'thomp-user';
 
 const Tracker = () => {
     const classes = [
-    'Collarless',
-    'Fighter',
-    'Hunter',
-    'Mage',
-    'Tank',
-    'Cleric',
-    'Thief',
-    'Necro',
-    'Tinkerer',
-    'Butcher',
-    'Druid',
-    'Psychic',
-    'Monk',
-    'Jester',
+        'collarless',
+        'fighter',
+        'hunter',
+        'mage',
+        'tank',
+        'cleric',
+        'thief',
+        'necro',
+        'tinkerer',
+        'butcher',
+        'druid',
+        'psychic',
+        'monk',
+        'jester',
     ];
+
+    const classIcons = {
+        collarless: collarless,
+        fighter: fighter,
+        hunter: hunter,
+        mage: mage,
+        tank: tank,
+        cleric: cleric,
+        thief: thief,
+        necro: necro,
+        tinkerer: tinkerer,
+        butcher: butcher,
+        druid: druid,
+        psychic: psychic,
+        monk: monk,
+        jester: jester,
+    };
 
     const zones = [
         'Caves',
@@ -34,38 +78,77 @@ const Tracker = () => {
         'Rift',
         'Jurassic',
         'End',
-        'Infinity'
+        'Infinite'
     ];
+
+    const zoneIcons = {
+        Caves: caves,
+        Boneyard: boneyard,
+        Domain: domain,
+        Core: core,
+        Moon: moon,
+        Rift: rift,
+        Jurassic: jurassic,
+        End: end,
+        Infinite: infinite,
+    };
 
     const images = [imgNull, imgNormal, imgHard, imgCrazy, imgImpossible];
 
-    const [imageIndexes, setImageIndexes] = useState(() => {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            return saved ? JSON.parse(saved) : {};
-        } catch (error) {
-            console.error('Failed to load saved tracker state: ', error);
-            return {};
-        }
-    });
+    const [imageIndexes, setImageIndexes] = useState({});
 
     useEffect(() => {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(imageIndexes));
-        } catch (error) {
-            console.error('Failed to save tracker state: ', error);
+        async function loadTracker() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/tracker/${USER_ID}`);
+                const cells = await response.json();
+
+                const mapped = {};
+                for (const cell of cells) {
+                    const key = `${cell.zone}-${cell.className}`;
+                    mapped[key] = cell.imageIndex;
+                }
+
+                setImageIndexes(mapped);
+            } catch (error) {
+                console.error('Failed to load tracker: ', error);
+            }
         }
-    }, [imageIndexes]);
+
+        loadTracker();
+    }, []);
+
+    async function saveCellToDb(zone, className, imageIndex) {
+        try {
+            const response = await fetch('http://localhost:3000/api/tracker/cell', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: USER_ID,
+                    zone,
+                    className,
+                    imageIndex,
+                }),
+            });
+
+            const data = await response.json();
+        } catch (error) {
+            console.error('Failed to save cell: ', error);
+        }
+    }
 
     function handleCycleImage(zone, className) {
         const cellKey = `${zone}-${className}`;
 
         setImageIndexes((prev) => {
             const currentIndex = prev[cellKey] ?? 0;
+            const nextIndex = (currentIndex + 1) % images.length;
+
+            saveCellToDb(zone, className, nextIndex);
 
             return {
                 ...prev,
-                [cellKey]: (currentIndex + 1) % images.length,
+                [cellKey]: nextIndex,
             };
         });
     }
@@ -82,7 +165,19 @@ const Tracker = () => {
                         <tr>
                             <th></th>
                             {classes.map((className) => (
-                                <th key={className}>{className}</th>
+                                <th key={className}>
+                                    <img
+                                        src={classIcons[className]}
+                                        alt={className}
+                                        style={{
+                                            width: '70px',
+                                            height: '70px',
+                                            objectFit: 'contain',
+                                            display: 'block',
+                                            margin: '0 auto',
+                                        }}
+                                    />
+                                </th>
                             ))}
                         </tr>
                     </thead>
@@ -90,7 +185,19 @@ const Tracker = () => {
                     <tbody>
                         {zones.map((zone) => (
                             <tr key={zone}>
-                                <td>{zone}</td>
+                                <td>
+                                    <img
+                                        src={zoneIcons[zone]}
+                                        alt={zone}
+                                        style={{
+                                            width: '70px',
+                                            height: '70px',
+                                            objectFit: 'contain',
+                                            display: 'block',
+                                            margin: '0 auto',
+                                        }}
+                                    />
+                                </td>
 
                                 {classes.map((className) => {
                                     const cellKey = `${zone}-${className}`;
