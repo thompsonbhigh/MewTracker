@@ -1,25 +1,11 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { Login, Tracker, Home, Navbar, ClassTracker, HouseTracker, NPCTracker } from './pages';
+import { Login, Tracker, Home, Navbar, ClassTracker, HouseTracker, NPCTracker, QuestTracker } from './pages';
 // import './sketchbook.css';
 import './manuscript.css';
 
 function App() {
-    const [message, setMessage] = useState({});
-
-    async function callHelloApi() {
-        try {
-            const response = await fetch('http://localhost:3000/api/hello');
-            if (!response.ok) {
-                throw new Error('HTTP error');
-            }
-            const data = await response.json();
-            setMessage(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+    const [progress, setProgress] = useState(0);
 
     return (
         <BrowserRouter>
@@ -29,10 +15,11 @@ function App() {
 
                     <Routes>
                         <Route path='/' element={<Home />} />
-                        <Route path='/tracker' element={<Tracker />} >
-                            <Route path='classes' element={<ClassTracker />} />
-                            <Route path='house' element={<HouseTracker />} />
-                            <Route path='npcs' element={<NPCTracker />} />
+                        <Route path='/tracker' element={<Tracker progress={progress} />} >
+                            <Route path='classes' element={<ClassTracker setProgress={setProgress} />} />
+                            <Route path='house' element={<HouseTracker setProgress={setProgress} />} />
+                            <Route path='npcs' element={<NPCTracker setProgress={setProgress} />} />
+                            <Route path='quests' element={<QuestTracker setProgress={setProgress} />} />
                         </Route>
                     </Routes>
                 </main>

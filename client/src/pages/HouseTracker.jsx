@@ -18,7 +18,7 @@ import imgImpossible from '../assets/impossible.png';
 
 const USER_ID = 'thomp-user';
 
-const HouseTracker = () => {
+const HouseTracker = ({setProgress}) => {
     const bosses = [
         'guillotina1',
         'guillotina2',
@@ -47,6 +47,17 @@ const HouseTracker = () => {
 
     const [imageIndexes, setImageIndexes] = useState({});
 
+    async function getProgress() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tracker/house-total/${USER_ID}`);
+            const total = await response.json();
+
+            setProgress(total.total);
+        } catch (error) {
+            console.error('Failed to fetch total: ', error);
+        }
+    }
+
     useEffect(() => {
         async function loadTracker() {
             try {
@@ -66,6 +77,7 @@ const HouseTracker = () => {
         }
 
         loadTracker();
+        getProgress();
     }, []);
 
     async function saveCellToDb(boss, imageIndex) {
@@ -94,6 +106,7 @@ const HouseTracker = () => {
             const nextIndex = (currentIndex + 1) % images.length;
 
             saveCellToDb(boss, nextIndex);
+            getProgress();
 
             return {
                 ...prev,

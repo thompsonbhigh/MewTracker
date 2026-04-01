@@ -32,18 +32,17 @@ import imgNull from '../assets/null.png';
 
 const USER_ID = 'thomp-user';
 
-const NPCTracker = () => {
+const NPCTracker = ({setProgress}) => {
     const npcIcons = [
-        { name: 'Butch', icon: butch, maxImages: 9 },
-        { name: 'Frank', icon: frank, maxImages: 6 },
-        { name: 'Tink', icon: tink, maxImages: 9 },
+        { name: 'Butch', icon: butch, maxImages: 8 },
+        { name: 'Frank', icon: frank, maxImages: 5 },
+        { name: 'Tink', icon: tink, maxImages: 8 },
         { name: 'Tracy', icon: tracy },
-        { name: 'Jack', icon: jack, maxImages: 6 },
-        { name: 'Zombie', icon: zombie, maxImages: 9 },
+        { name: 'Jack', icon: jack, maxImages: 5 },
+        { name: 'Zombie', icon: zombie, maxImages: 8 },
     ];
 
     const images = [
-        done,
         imgNull,
         one,
         two,
@@ -69,6 +68,17 @@ const NPCTracker = () => {
 
     const [imageIndexes, setImageIndexes] = useState({});
 
+    async function getProgress() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tracker/npc-total/${USER_ID}`);
+            const total = await response.json();
+
+            setProgress(total.total);
+        } catch (error) {
+            console.error('Failed to fetch total: ', error);
+        }
+    }
+
     useEffect(() => {
         async function loadTracker() {
             try {
@@ -88,6 +98,7 @@ const NPCTracker = () => {
         }
 
         loadTracker();
+        getProgress();
     }, []);
 
     async function saveCellToDb(npc, imageIndex) {
@@ -114,10 +125,11 @@ const NPCTracker = () => {
         const maxImages = npc?.maxImages ?? images.length;
 
         setImageIndexes((prev) => {
-            const currentIndex = prev[cellKey] ?? 1;
+            const currentIndex = prev[cellKey] ?? 0;
             const nextIndex = (currentIndex + 1) % maxImages;
 
             saveCellToDb(npcName, nextIndex);
+            getProgress();
 
             return {
                 ...prev,
@@ -155,7 +167,7 @@ const NPCTracker = () => {
                                 {npcIcons.map((npc) => {
                                     <td key={npc.name}></td>
                                     const cellKey = `${npc.name}-${USER_ID}`;
-                                    const currentIndex = imageIndexes[cellKey] ?? 1;
+                                    const currentIndex = imageIndexes[cellKey] ?? 0;
 
                                     return (
                                         <td key={npc.name}>

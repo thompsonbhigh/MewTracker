@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
-const Tracker = () => {
+const Tracker = (progress) => {
+    const percentage = `${progress.progress}%`;
+    
     return (
         <main>
             <div className='manuscript-grid manuscript-grid--2'>
@@ -16,11 +17,11 @@ const Tracker = () => {
                     <div className='card__body'>
                         <div className='progress'>
                             <div className='progress__meta'>
-                                <span className='progress__value'>45%</span>
+                                <span className='progress__value'>{percentage}</span>
                             </div>
 
                             <div className='progress__track'>
-                                <div className='progress__fill' style={{ width: '45%' }}/>
+                                <div className='progress__fill' style={{ width: `${percentage}` }}/>
                             </div>
                         </div>
                     </div>
@@ -34,6 +35,7 @@ const Tracker = () => {
                     <NavLink to='/tracker/classes' end className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>Classes</NavLink>
                     <NavLink to='/tracker/house' className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>House</NavLink>
                     <NavLink to='/tracker/npcs' className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>NPCs</NavLink>
+                    <NavLink to='/tracker/quests' className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>Quests</NavLink>
                 </nav>
             </header>
             <Outlet />

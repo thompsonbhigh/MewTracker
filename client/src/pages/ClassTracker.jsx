@@ -33,7 +33,19 @@ import infinite from '../assets/Infinite.webp';
 
 const USER_ID = 'thomp-user';
 
-const ClassTracker = () => {
+const ClassTracker = ({setProgress}) => {
+
+    async function getProgress() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tracker/total/${USER_ID}`);
+            const total = await response.json();
+
+            setProgress(total.total);
+        } catch (error) {
+            console.error('Failed to fetch total: ', error);
+        }
+    }
+
     const classes = [
         'collarless',
         'fighter',
@@ -115,6 +127,7 @@ const ClassTracker = () => {
         }
 
         loadTracker();
+        getProgress();
     }, []);
 
     async function saveCellToDb(zone, className, imageIndex) {
@@ -144,6 +157,7 @@ const ClassTracker = () => {
             const nextIndex = (currentIndex + 1) % images.length;
 
             saveCellToDb(zone, className, nextIndex);
+            getProgress();
 
             return {
                 ...prev,

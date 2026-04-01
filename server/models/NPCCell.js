@@ -16,7 +16,7 @@ const npcCellSchema = new mongoose.Schema(
             required: true,
             default: 0,
             min: 0,
-            max: 4,
+            max: 20,
         },
     },
     {
