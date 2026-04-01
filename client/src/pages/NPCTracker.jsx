@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import beanies from '../assets/beanies.svg';
 import butch from '../assets/butch.webp';
 import frank from '../assets/frank.svg';
 import tink from '../assets/tink.svg';
@@ -8,26 +7,65 @@ import tracy from '../assets/tracy.webp';
 import jack from '../assets/jack.svg';
 import zombie from '../assets/zombie.svg';
 
+import one from '../assets/one.png';
+import two from '../assets/two.png';
+import three from '../assets/three.png';
+import four from '../assets/four.png';
+import five from '../assets/five.png';
+import six from '../assets/six.png';
+import seven from '../assets/seven.png';
+import eight from '../assets/eight.png';
+import nine from '../assets/nine.png';
+import ten from '../assets/ten.png';
+import eleven from '../assets/eleven.png';
+import twelve from '../assets/twelve.png';
+import thirteen from '../assets/thirteen.png';
+import fourteen from '../assets/fourteen.png';
+import fifteen from '../assets/fifteen.png';
+import sixteen from '../assets/sixteen.png';
+import seventeen from '../assets/seventeen.png';
+import eighteen from '../assets/eighteen.png';
+import nineteen from '../assets/nineteen.png';
+import twenty from '../assets/twenty.png';
+import done from '../assets/done.png';
 import imgNull from '../assets/null.png';
-import imgNormal from '../assets/normal.png';
-import imgHard from '../assets/hard.png';
-import imgCrazy from '../assets/crazy.png';
-import imgImpossible from '../assets/impossible.png';
 
 const USER_ID = 'thomp-user';
 
 const NPCTracker = () => {
     const npcIcons = [
-        { name: 'Beanies', icon: beanies },
-        { name: 'Butch', icon: butch },
-        { name: 'Frank', icon: frank },
-        { name: 'Tink', icon: tink },
+        { name: 'Butch', icon: butch, maxImages: 9 },
+        { name: 'Frank', icon: frank, maxImages: 6 },
+        { name: 'Tink', icon: tink, maxImages: 9 },
         { name: 'Tracy', icon: tracy },
-        { name: 'Jack', icon: jack },
-        { name: 'Zombie', icon: zombie },
+        { name: 'Jack', icon: jack, maxImages: 6 },
+        { name: 'Zombie', icon: zombie, maxImages: 9 },
     ];
 
-    const images = [imgNull, imgNormal, imgHard, imgCrazy, imgImpossible];
+    const images = [
+        done,
+        imgNull,
+        one,
+        two,
+        three,
+        four,
+        five,
+        six,
+        seven,
+        eight,
+        nine,
+        ten,
+        eleven,
+        twelve,
+        thirteen,
+        fourteen,
+        fifteen,
+        sixteen,
+        seventeen,
+        eighteen,
+        nineteen,
+        twenty,
+    ];
 
     const [imageIndexes, setImageIndexes] = useState({});
 
@@ -70,14 +108,16 @@ const NPCTracker = () => {
         }
     }
 
-    function handleCycleImage(npc) {
-        const cellKey = `${npc}-${USER_ID}`;
+    function handleCycleImage(npcName) {
+        const cellKey = `${npcName}-${USER_ID}`;
+        const npc = npcIcons.find((n) => n.name === npcName);
+        const maxImages = npc?.maxImages ?? images.length;
 
         setImageIndexes((prev) => {
-            const currentIndex = prev[cellKey] ?? 0;
-            const nextIndex = (currentIndex + 1) % images.length;
+            const currentIndex = prev[cellKey] ?? 1;
+            const nextIndex = (currentIndex + 1) % maxImages;
 
-            saveCellToDb(npc, nextIndex);
+            saveCellToDb(npcName, nextIndex);
 
             return {
                 ...prev,
@@ -115,7 +155,7 @@ const NPCTracker = () => {
                                 {npcIcons.map((npc) => {
                                     <td key={npc.name}></td>
                                     const cellKey = `${npc.name}-${USER_ID}`;
-                                    const currentIndex = imageIndexes[cellKey] ?? 0;
+                                    const currentIndex = imageIndexes[cellKey] ?? 1;
 
                                     return (
                                         <td key={npc.name}>
